@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NYABUNGO — lancer la démo</title>
+<style>
+  :root{--bg:#0f0a06;--card:#171008;--line:rgba(247,230,205,.13);--txt:#f7eddd;--mut:#c9b39a;--brand:#e2a04b;--ok:#5fae90}
+  *{box-sizing:border-box}
+  body{margin:0;padding:34px 18px 70px;background:var(--bg);color:var(--txt);
+    font:15px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .w{max-width:900px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+  h1 span{color:var(--brand)}
+  .sub{color:var(--mut);margin:0 0 24px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:26px}
+  @media(max-width:680px){.cards{grid-template-columns:1fr}}
+  a.card{display:block;text-decoration:none;color:inherit;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:border-color .2s,transform .2s}
+  a.card:hover{border-color:var(--brand);transform:translateY(-2px)}
+  a.card b{display:block;font-size:16px;margin-bottom:4px}
+  a.card small{color:var(--mut);font-size:12.5px}
+  .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 8px;border-radius:99px;background:rgba(95,174,144,.16);color:var(--ok);margin-bottom:8px}
+  h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:26px 0 10px}
+  ol{margin:0;padding-left:22px}
+  li{margin-bottom:7px}
+  li code{background:rgba(226,160,75,.13);color:var(--brand);padding:1px 6px;border-radius:5px;font-size:13px}
+  .note{margin-top:22px;padding:14px 16px;border-left:3px solid var(--brand);background:rgba(226,160,75,.07);
+    border-radius:0 10px 10px 0;color:var(--mut);font-size:13.5px}
+  .k{display:inline-block;background:rgba(226,160,75,.14);color:var(--brand);border:1px solid rgba(226,160,75,.3);
+    padding:1px 8px;border-radius:6px;font-size:12.5px;font-weight:600;letter-spacing:.02em}
+  .phone{width:100%;height:420px;border:1px solid var(--line);border-radius:18px;background:#000;display:block}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>NYABUNGO · <span>lanceur de démo</span></h1>
+  <p class="sub">Menu digital — version corrigée et adaptée mobile : <code>nyabungo2.html</code></p>
+
+  <div class="cards">
+    <a class="card" href="nyabungo2.html?table=07" target="_blank">
+      <span class="tag">à projeter</span>
+      <b>Ouvrir la démo (table 07)</b>
+      <small>Parcours complet : bandeau signature → fiche plat → panier → envoi → suivi → paiement → reçu.</small>
+    </a>
+    <a class="card" href="nyabungo2.html?table=12" target="_blank">
+      <span class="tag">variante</span>
+      <b>Démo table 12</b>
+      <small>Montre que le numéro de table vient du QR code — changez <code>?table=</code> pour n'importe quelle table.</small>
+    </a>
+    <a class="card" href="nyabungo1.html?table=07" target="_blank">
+      <b>Ancienne maquette (comparaison)</b>
+      <small>nyabungo1.html — conservée comme référence, non développée.</small>
+    </a>
+    <a class="card" href="comparatif.html" target="_blank">
+      <b>Rapport d'analyse des deux maquettes</b>
+      <small>Les bugs relevés au départ et ce qui a été corrigé.</small>
+    </a>
+  </div>
+
+  <h2>Aperçu dans un cadre téléphone</h2>
+  <iframe class="phone" src="deploy/index.html" title="Aperçu mobile du menu autonome"></iframe>
+  <p class="sub" style="margin-top:8px">Cet aperçu charge <code>deploy/index.html</code> : exactement le fichier que tu mettras sur Vercel.</p>
+
+  <h2>Mise en ligne sur Vercel</h2>
+  <ol>
+    <li><b>Le plus simple — un seul fichier.</b> Glisse <code>deploy/index.html</code> sur <span class="k">vercel.com/new</span> (déposer un dossier).
+        Il est <b>100 % autonome</b> : logo et photos sont encodés à l'intérieur, aucune dépendance <code>assets/</code>, donc aucun 404 possible.</li>
+    <li><b>Le plus propre — le dépôt entier.</b> Importe le repo GitHub dans Vercel, <i>Framework Preset</i> = <span class="k">Other</span>,
+        <i>Output Directory</i> = <span class="k">.</span> Tu gardes les fichiers séparés (meilleur cache, page HTML plus légère : 163 Ko + images en lazy-load).</li>
+    <li>Reconstruire le fichier autonome après avoir ajouté les 6 visuels manquants : <code>python3 build-standalone.py</code>.</li>
+  </ol>
+
+  <div class="note">
+    <b>Visuels :</b> 10 photos sur 16 sont intégrées. Les 6 plats restants (brochettes mixtes, jus de passion,
+    citronnelle-gingembre, café, dôme chocolat, beignets au miel) affichent <b>l'illustration vectorielle</b> prévue à cet effet :
+    rien ne casse. Dépose leurs JPG dans <code>assets/</code> sous les noms attendus, relance le build, et ils apparaissent tous seuls.
+  </div>
+
+  <h2>Script de démo (6 minutes)</h2>
+  <ol>
+    <li><b>Accueil</b> — laissez tourner le bandeau « Signature du chef » : 5 plats défilent seuls, puis montrez qu'on peut les faire glisser du doigt.</li>
+    <li><b>Le logo</b> — colonne droite du hero ; les puces indiquent la table et les horaires.</li>
+    <li><b>Ajouter</b> — un tap sur le « + » d'une carte : le panier se remplit, l'illustration vole dans la barre (à tester vite, c'est l'effet qui fait l'effet).</li>
+    <li><b>Fiche plat</b> — tap n'importe où sur la carte : taille de portion, accompagnement, niveau de piment, prix recalculé en direct.</li>
+    <li><b>Note cuisine</b> — « sans piment pour un enfant » : montre l'attention au détail.</li>
+    <li><b>Envoyer</b> — numéro de commande, puis suivi : anneau ETA, timeline reçue → préparation → prête → servie. Ça s'avance tout seul en ~40 s.</li>
+    <li><b>Payer</b> — Lumicash, EcoCash, carte ou espèces, avec reçu imprimable.</li>
+    <li><b>Réseaux</b> — pied de page : WhatsApp, Facebook, Instagram, TikTok, site officiel, itinéraire Google Maps.</li>
+  </ol>
+
+  <div class="note">
+    <b>Avant de brancher le vidéoprojecteur :</b> ouvrez la page, passez en thème clair puis sombre (le bandeau du navigateur suit le thème),
+    changez la langue FR/EN d'un tap, et faites défiler le menu d'un pouce. Le logo réel se place dans
+    <code>assets/logo.gif</code> : dès que le fichier est là, il remplace le monogramme vectoriel sans toucher au code.
+  </div>
+</div>
+</body>
+</html>

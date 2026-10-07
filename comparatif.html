@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NYABUNGO — Comparatif des 2 maquettes</title>
+<style>
+  :root{--bg:#12100c;--card:#1b1812;--line:#2e2a22;--txt:#f3ece0;--mut:#a99c86;--ok:#4bbf9a;--bad:#e2694f;--brand:#eda94f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:28px 20px 80px}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:-.02em;margin-bottom:6px}
+  h1 span{color:var(--brand)}
+  .sub{color:var(--mut);margin-bottom:22px}
+  .verdict{border:1px solid var(--line);border-left:4px solid var(--ok);background:linear-gradient(90deg,rgba(75,191,154,.09),transparent);padding:16px 18px;border-radius:12px;margin-bottom:26px}
+  .verdict b{color:var(--ok)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:26px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .col{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .col header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+  .win{background:rgba(75,191,154,.16);color:var(--ok)}
+  .lose{background:rgba(226,105,79,.14);color:var(--bad)}
+  .name{font-weight:700;font-size:15px;margin-right:auto}
+  iframe{width:100%;height:640px;border:0;display:block;background:#000}
+  .links{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}
+  a.btn{font-size:13px;font-weight:600;text-decoration:none;color:var(--txt);border:1px solid var(--line);padding:7px 12px;border-radius:9px}
+  a.btn:hover{border-color:var(--brand);color:var(--brand)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:14px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-size:11px;letter-spacing:.09em;text-transform:uppercase;background:#171410}
+  td.y{color:var(--ok);font-weight:700}td.n{color:var(--bad);font-weight:700}td.m{color:var(--mut)}
+  tr:last-child td{border-bottom:0}
+  .note{color:var(--mut);font-size:13px;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NYABUNGO — Menu digital · <span>comparatif technique</span></h1>
+  <p class="sub">nyabungo1.html vs nyabungo2.html — testés tous les deux dans un DOM réel (jsdom), parcours client complet simulé.</p>
+
+  <div class="verdict">
+    <b>Recommandation : développer nyabungo1.html.</b> Il passe 10/11 étapes du parcours client sans aucune erreur JS, et le bouton
+    « + » fonctionne vraiment. nyabungo2.html a un bug bloquant : <b>le bouton « Ajouter » d'une carte ne remplit pas le panier</b>
+    (le gestionnaire de clic [data-open] intercepte l'événement avant [data-quickadd]) + une exception runtime
+    <i>getBoundingClientRect of null</i> + <b>zéro échappement HTML</b> (XSS via la note cuisine) + langue par défaut = anglais.
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <header><span class="name">nyabungo1.html</span><span class="tag win">à développer</span></header>
+      <iframe src="nyabungo1.html?table=07" title="nyabungo1"></iframe>
+      <div class="links"><a class="btn" href="nyabungo1.html?table=07" target="_blank">Plein écran ↗</a></div>
+    </div>
+    <div class="col">
+      <header><span class="name">nyabungo2.html</span><span class="tag lose">buggé</span></header>
+      <iframe src="nyabungo2.html?table=07" title="nyabungo2"></iframe>
+      <div class="links"><a class="btn" href="nyabungo2.html?table=07" target="_blank">Plein écran ↗</a></div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Critère</th><th>nyabungo1.html</th><th>nyabungo2.html</th></tr>
+    <tr><td>Parcours complet testé (11 étapes)</td><td class="y">11 ✓ — conf. → suivi → paiement → reçu → notation</td><td class="n">7 ✓ / 4 ✗</td></tr>
+    <tr><td>Validation du paiement</td><td class="y">par méthode (tél. ≥ 8 ch., carte 12 ch. + CVC)</td><td class="m">sans validation de champ</td></tr>
+    <tr><td>Fin de session après notation</td><td class="y">oui (panier + commande purgés)</td><td class="m">à vérifier</td></tr>
+    <tr><td>Ajout rapide au panier depuis une carte</td><td class="y">OK</td><td class="n">CASSE (ouvre la fiche au lieu d'ajouter)</td></tr>
+    <tr><td>Erreurs JS runtime</td><td class="y">aucune</td><td class="n">TypeError getBoundingClientRect (null)</td></tr>
+    <tr><td>Échappement HTML (sécurité)</td><td class="y">esc() utilisé 65×</td><td class="n">aucun — note cuisine injectable</td></tr>
+    <tr><td>Langue par défaut</td><td class="y">français</td><td class="n">langue du navigateur → EN sur PC démo</td></tr>
+    <tr><td>Anti-flash de thème (class boot)</td><td class="y">oui</td><td class="n">non</td></tr>
+    <tr><td>meta theme-color (chrome mobile)</td><td class="y">oui, mis à jour</td><td class="n">absent</td></tr>
+    <tr><td>Responsive</td><td class="y">640 / 900 / 1024 px</td><td class="m">560 / 900 px</td></tr>
+    <tr><td>Persistance thème</td><td class="y">localStorage (survit au rechargement)</td><td class="m">sessionStorage seulement</td></tr>
+    <tr><td>Flux de commande</td><td class="y">6 écrans : conf. → envoyé → suivi → paiement → reçu → notation</td><td class="y">complet aussi (suivi ETA animé, reçu, paiement)</td></tr>
+    <tr><td>Paiements locaux</td><td class="y">Lumicash · EcoCash · carte · espèces</td><td class="y">idem</td></tr>
+    <tr><td>Points forts visuels</td><td class="m">grille par catégorie, carrousel signatures, parallaxe/tilt, toasts, haptique</td><td class="y">anneau ETA animé, timeline soignée, vue suivi très lisible</td></tr>
+    <tr><td>Lignes (CSS / JS)</td><td class="m">482 / 1186</td><td class="m">801 / 1491</td></tr>
+  </table>
+
+  <p class="note"><b>Pièges à connaître pour la démo (fichier 1)</b> — (1) sur l'écran Paiement, le bouton reste grisé tant qu'aucun
+  numéro n'est saisi : tape simplement <code>+257 79 12 34 56</code> ou choisis « Espèces » ; (2) l'intro plein écran dure 2,4 s
+  (bouton « Passer » dispo) ; (3) le suivi avance tout seul en ~40 s (0 s → 6 s → 16 s → 40 s), parfait pour montrer le minuteur sans attendre ;
+  (4) ligne à nettoyer : l'expression <code>payBtn.disabled=!(('payCard' in window?$:'')||1)</code> dans <i>buildPayment()</i> est du code
+  résiduel inoffensif mais confus.</p>
+
+  <p class="note">Les deux fichiers partagent le même écueil : 16 champs <code>image:'assets/…jpg'</code> dans les données du menu ne sont
+  jamais lus (illustrations SVG générées à la place) — duplication morte à supprimer, aucun risque d'image cassée.
+  Astuce : ajoutez <code>?table=12</code> à l'URL pour changer le numéro de table.</p>
+</div>
+</body>
+</html>

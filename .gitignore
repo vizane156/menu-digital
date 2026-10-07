@@ -1,0 +1,7 @@
+# artefacts régénérables (python3 build-standalone.py)
+deploy/
+
+# sauvegardes / divers
+*.bak
+.DS_Store
+Thumbs.db
