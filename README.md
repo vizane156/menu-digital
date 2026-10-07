@@ -1,50 +1,57 @@
 # menu-digital
 
-Le menu de restaurant en ligne, accès en scannant le code QR.
+Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le code QR posé sur les tables.
 
-## Ce qui est déployable
+## Déploiement retenu : option B — le dépôt entier
+
+1. [vercel.com/new](https://vercel.com/new) → importer `vizane156/menu-digital`
+2. *Framework Preset* = **Other** · *Build Command* = **vide** · *Output Directory* = **`.`** (la racine)
+3. Deployer. `vercel.json` fait le reste :
+
+| Ce que fait `vercel.json` | Pourquoi |
+|---|---|
+| redirige `/` → `/nyabungo2.html` | le QR code peut pointer vers l'URL racine, sans nom de fichier |
+| redirige `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` → `/` | les fichiers de travail (ancienne maquette, rapport d'analyse, build local) ne sont pas accessibles aux clients |
+| `Cache-Control: max-age=2592000` sur `/assets/*` | les 16 photos + le logo ne sont téléchargés qu'une fois par client |
+| `max-age=0, must-revalidate` sur `/*.html` | tu modifies le menu, le client voit la nouvelle version immédiatement |
+| `X-Content-Type-Options` + `Referrer-Policy` | deux réglages de base qui coûtent rien |
+
+## Fichiers
 
 | Fichier | Rôle |
 |---|---|
-| **`deploy/index.html`** | **Le fichier à mettre sur Vercel.** 100 % autonome : logo et photos encodés en base64 à l'intérieur, aucune dépendance `assets/`. ~1 Mo. |
-| `nyabungo2.html` | La source (163 Ko). À servir **avec** le dossier `assets/` si tu déploies le dépôt entier. |
-| `assets/*.jpg` | Photographies des plats (10 sur 16 à ce jour, ~90 Ko chacune, 1040×567 optimisées). |
-| `assets/logo.png` | Logo du restaurant, détouré et compressé (700×700, 28 Ko, fond transparent). |
-| `index.html` | Lanceur de démo local : aperçu téléphone + script de présentation. |
-| `comparatif.html` | Rapport d'analyse des deux maquettes de départ. |
-| `nyabungo1.html` | Ancienne maquette, conservée en référence — non déployée. |
+| **`nyabungo2.html`** | **Le menu** (167 Ko). C'est le fichier servi en production. |
+| **`assets/`** | 16 photographies de plats (1040×567, ~86 Ko chacune, 1,4 MB au total) + `logo.png` (700×700, 28 Ko, détouré, fond transparent). Doit être déployé **avec** le HTML. |
+| `vercel.json` | Réglages Vercel ci-dessus. |
+| `index.html` | Lanceur de démo (aperçu téléphone + consignes). Inutile en production, mais servi : reachable sur `/index.html`. |
+| `build-standalone.py` | Fabrique `deploy/index.html`, version **mono-fichier autonome** (photos et logo en base64, 1,4 MB). Repli si tu ne peux déposer qu'un seul fichier. |
+| `comparatif.html` | Analyse des deux maquettes de départ. |
+| `nyabungo1.html` | Ancienne maquette, conservée en référence — **non déployée**. |
+| `LOGO NYABUNGO.gif` | Source du logo (287 Ko, 2171×2117). **Le HTML ne le charge pas** : c'est `assets/logo.png`, rogné et compressé. |
 
-## Vercel
+## Robustesse des visuels
 
-**Option A — un seul fichier (le plus simple)**
-glisser `deploy/index.html` sur *New Project → Deploy from computer*.
+Chaque visuel a un **repli garanti** : photo absente, fichier qui ne charge pas (WiFi de salle saturé, upload incomplet) → l'illustration vectorielle du plat réapparaît toute seule (`error` écouté en phase de capture). Aucune image cassée n'est possible pendant le service.
 
-**Option B — le dépôt entier (le plus propre)**
-importer le repo, *Framework Preset* = `Other`, *Output Directory* = `.`.
-HTML léger + images en `loading="lazy"` et mieux mises en cache.
-
-Après avoir ajouté des visuels dans `assets/`, régénérer le fichier autonome :
-
-```
-python3 build-standalone.py
-```
+Le logo du hero occupe une plaque crème dégradée dès qu'une image réelle est chargée : le « H » du logo est sombre et disparaîtrait sinon sur le thème nuit. Taille ~celle d'une carte signature (132→230 px selon l'écran, 220–252 px sur desktop).
 
 ## Lancer en local
 
 ```
-python3 serve.py 8080      # serveur sans cache (aperçu toujours à jour)
-python3 -m http.server 8080  # ou le serveur standard
+python3 serve.py 8080          # (hors dépôt) serveur sans cache : aperçu toujours à jour
+python3 -m http.server 8080    # ou le serveur standard
 ```
 
 Puis `http://localhost:8080/` — ou directement `nyabungo2.html?table=07`
-(le numéro de table provient du QR code scanné).
+(le numéro de table vient du QR code scanné ; il s'affiche dans le hero et voyage jusqu'à la commande).
 
-## Notes techniques
+## À brancher pour la vraie production
 
-- Un seul fichier HTML, aucune dépendance d'exécution ; polices via CDN avec repli système
-  (la page reste correcte sans réseau), illustrations en SVG embarqué.
-- **Chaque visuel a un repli** : si une photo manque ou ne charge pas, l'illustration
-  vectorielle du plat prend la place automatiquement — jamais d'image cassée en démo.
-- API simulée à remplacer par les vrais endpoints : `api.submitOrder`, `api.getOrderStatus`,
-  `api.createPayment`, `api.getReceipt`.
-- Thème et langue mémorisés en `localStorage` ; panier, commande et note en `sessionStorage`.
+- **Endpoints API simulés** : `api.submitOrder`, `api.getOrderStatus`, `api.createPayment`, `api.getReceipt`.
+- **QR codes** : un par table, `https://<domaine>/?table=07` (le chemin `/` suffit grâce à la redirection).
+- **Prix** : ils vivent dans le tableau `MENU` en haut du `<script>` — une seule ligne par plat (`id`, `nom`, `prix` en FBu, `img`).
+- Photographies : les 16 sont générées. Remplace-les par les vraies photos du restaurant dès que disponibles — mêmes noms de fichiers dans `assets/`, rien d'autre à toucher.
+
+## Technique
+
+Un seul fichier HTML, **aucune dépendance d'exécution** : polices via CDN avec repli système, illustrations en SVG embarqué, panier et préférences en `localStorage`/`sessionStorage`. Conçu **mobile-first** (cibles tactiles ≥ 44 px, `env(safe-area-inset-*)`, `100dvh`, plein écran sur téléphone), avec thème clair/sombre, FR/EN, impression, accessibilité clavier et lecteur d'écran.

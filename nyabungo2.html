@@ -826,18 +826,21 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
 .hero{ padding-top:6px; margin-bottom:22px }
 .hero-top{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; margin-bottom:22px }
 .hero-copy{ display:flex; flex-direction:column; gap:9px; min-width:0 }
-.hero-title{ font-size:clamp(34px,13.5vw,62px) }
+.hero-title{ font-size:clamp(31px,11vw,58px) }
 .hero-tag{ font-size:14px; max-width:30ch }
 .hero-info{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px }
 .hero-info .chip{ font-size:11.5px; padding:7px 12px; min-height:36px }
 .hero-open{ color:var(--ink-2) }
 .hero-open b{ color:var(--accent) }
 
-.hero-logo{ position:relative; width:clamp(86px,23vw,172px); aspect-ratio:236/206; flex:none;
+.hero-logo{ position:relative; width:clamp(132px,46vw,230px); aspect-ratio:236/206; flex:none;
   display:grid; place-items:center; justify-self:end;
   filter:drop-shadow(0 14px 30px rgba(0,0,0,.35)) }
 .hero-logo img{ position:relative; z-index:2; width:100%; height:100%; object-fit:contain; display:none }
 .hero-logo.has-img img{ display:block }
+/* le fichier logo est carré : sans cette règle, object-fit:contain le réduit
+   à 87 % de la boîte (ratio 236/206 réservé au monogramme paysage). */
+.hero-logo.has-img{ aspect-ratio:1/1 }
 .hero-logo.has-img .logo-fallback{ display:none }
 .logo-fallback{ width:100%; height:100%; overflow:visible }
 .logo-fallback{ transform-origin:50% 50% }
@@ -942,9 +945,9 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
 
 /* --- très petits écrans (iPhone SE, Galaxy Go…) --- */
 @media (max-width:389px){
-  .hero-title{ font-size:30px }
+  .hero-title{ font-size:27px }
   .hero-tag{ font-size:13px }
-  .hero-logo{ width:64px }
+  .hero-logo{ width:126px }
   .car-card{ flex-basis:80vw; width:80vw }
   .card-art{ height:104px }
   .brand-mini span{ display:none }
@@ -965,7 +968,7 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
 @media (max-height:520px) and (orientation:landscape){
   .view-menu{ padding-top:calc(60px + env(safe-area-inset-top)) }
   .hero-top{ margin-bottom:12px }
-  .hero-logo{ width:58px }
+  .hero-logo{ width:96px }
   .car-card .art{ height:84px }
   .dish-hero{ height:120px }
   .sheet{ max-height:96dvh }
@@ -977,6 +980,7 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
   .wrap{ padding:0 20px }
   .hero-top{ gap:26px; margin-bottom:30px }
   .hero-title{ font-size:clamp(46px,7vw,66px) }
+  .hero-top{ gap:22px }
   .hero-tag{ font-size:15px; max-width:38ch }
   .grid{ grid-template-columns:1fr 1fr; gap:14px }
   .car-card{ flex-basis:236px; width:236px }
@@ -993,7 +997,7 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
   .wrap{ padding:0 24px }
   .hero{ margin-bottom:34px }
   .hero-top{ grid-template-columns:1fr auto; align-items:center; margin-bottom:38px }
-  .hero-logo{ width:150px }
+  .hero-logo{ width:220px }
   .view-menu{ padding-top:calc(96px + env(safe-area-inset-top)) }
   .grid{ grid-template-columns:repeat(3,1fr); gap:18px; perspective:1200px }
   .card-art{ height:148px }
@@ -1007,7 +1011,7 @@ input,textarea,select{ font-size:16px !important }   /* bloque le zoom forcé d'
 }
 @media (min-width:1180px){
   .grid{ grid-template-columns:repeat(4,1fr) }
-  .hero-logo{ width:168px }
+  .hero-logo{ width:252px }
 }
 
 /* ============================================================
@@ -1039,13 +1043,13 @@ img.ph-broken{display:none}
    PLAQUE DU LOGO — le « H » du logo est noir : sans support clair
    il disparaîtrait dans le thème sombre.
 ============================================================ */
-.hero-logo.has-img{padding:9px;border-radius:20px;
+.hero-logo.has-img{padding:clamp(9px,2.2vw,16px);border-radius:clamp(20px,4.5vw,30px);
   background:linear-gradient(165deg,#fdf6e9 0%,#f0e3cb 58%,#e4d4b8 100%);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 20px 42px -16px rgba(0,0,0,.55),
               0 0 0 1px rgba(120,80,30,.2)}
 [data-theme="light"] .hero-logo.has-img{box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
   0 16px 34px -18px rgba(120,80,30,.4), 0 0 0 1px rgba(120,80,30,.16)}
-.hero-logo.has-img img{padding:2px}
+.hero-logo.has-img img{padding:clamp(2px,.8vw,7px)}
 .hero-logo.has-img{filter:none}
 
 /* ============================================================
@@ -1138,11 +1142,11 @@ img.ph-broken{display:none}
             </div>
           </div>
           <div class="hero-logo" id="heroLogo">
-            <img id="logoImg" alt="Logo NYABUNGO H\u00f4tel Restaurant" width="150" height="150" decoding="async">
-            <!-- Monogramme de repli, fid\u00e8le \u00e0 la signature du restaurant (N orange, H sombre,
-                 R brun, verres rouges, ruban). D\u00e8s que vous d\u00e9posez votre fichier dans
-                 assets/logo.gif (ou .png/.svg/.jpg/.webp), il est charg\u00e9 \u00e0 la place automatiquement. -->
-            <svg class="logo-fallback" viewBox="0 0 236 206" role="img" aria-label="Nyabungo H\u00f4tel Restaurant">
+            <img id="logoImg" alt="Logo NYABUNGO Hôtel Restaurant" width="180" height="180" decoding="async">
+            <!-- Monogramme de repli, fidèle à la signature du restaurant (N orange, H sombre,
+                 R brun, verres rouges, ruban). Dès que vous déposez votre fichier dans
+                 assets/logo.gif (ou .png/.svg/.jpg/.webp), il est chargé à la place automatiquement. -->
+            <svg class="logo-fallback" viewBox="0 0 236 206" role="img" aria-label="Nyabungo Hôtel Restaurant">
               <g class="lf-h">
                 <path d="M130 16h27v56h32V16h27v128h-27v-46h-32v46h-27z"/>
               </g>
@@ -1158,7 +1162,7 @@ img.ph-broken{display:none}
                 <path d="M224 150c-28 16-60 26-96 28v22c42-2 78-13 108-31z"/>
               </g>
               <text class="lf-t1" x="24" y="180">NYABUNGO</text>
-              <text class="lf-t2" x="120" y="180">H\u00d4TEL RESTAURANT</text>
+              <text class="lf-t2" x="120" y="180">HÔTEL RESTAURANT</text>
             </svg>
           </div>
         </div>

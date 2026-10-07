@@ -60,22 +60,25 @@
   </div>
 
   <h2>Aperçu dans un cadre téléphone</h2>
-  <iframe class="phone" src="deploy/index.html" title="Aperçu mobile du menu autonome"></iframe>
-  <p class="sub" style="margin-top:8px">Cet aperçu charge <code>deploy/index.html</code> : exactement le fichier que tu mettras sur Vercel.</p>
+  <iframe class="phone" src="nyabungo2.html?table=07" title="Aperçu mobile du menu"></iframe>
+  <p class="sub" style="margin-top:8px">Cet aperçu charge <code>nyabungo2.html</code>, servi avec <code>assets/</code> : le cas réel de l'option B. La racine <code>/</code> du site pointe déjà sur cette page (<code>vercel.json</code>), donc le QR code peut envoyer vers l'URL sans nom de fichier.</p>
 
-  <h2>Mise en ligne sur Vercel</h2>
+  <h2>Mise en ligne sur Vercel — option B retenue (dépôt entier)</h2>
   <ol>
-    <li><b>Le plus simple — un seul fichier.</b> Glisse <code>deploy/index.html</code> sur <span class="k">vercel.com/new</span> (déposer un dossier).
-        Il est <b>100 % autonome</b> : logo et photos sont encodés à l'intérieur, aucune dépendance <code>assets/</code>, donc aucun 404 possible.</li>
+    <li><b>Option B (retenue) — le dépôt entier.</b> <span class="k">vercel.com/new</span> → importer <code>vizane156/menu-digital</code> →
+        <i>Framework Preset</i> = <span class="k">Other</span>, <i>Build Command</i> = <span class="k">vide</span>, <i>Output Directory</i> = <span class="k">.</span>
+        Déploie tel quel : <code>vercel.json</code> sert déjà le menu sur <code>/</code> et met les images en cache 30 jours.</li>
+    <li><b>Option A (repli, si besoin)</b> — un seul fichier : <code>python3 build-standalone.py</code> puis glisser
+        <code>deploy/index.html</code>. 16 photos + logo encodés en base64, zéro dépendance <code>assets/</code>.</li>
     <li><b>Le plus propre — le dépôt entier.</b> Importe le repo GitHub dans Vercel, <i>Framework Preset</i> = <span class="k">Other</span>,
         <i>Output Directory</i> = <span class="k">.</span> Tu gardes les fichiers séparés (meilleur cache, page HTML plus légère : 163 Ko + images en lazy-load).</li>
     <li>Reconstruire le fichier autonome après avoir ajouté les 6 visuels manquants : <code>python3 build-standalone.py</code>.</li>
   </ol>
 
   <div class="note">
-    <b>Visuels :</b> 10 photos sur 16 sont intégrées. Les 6 plats restants (brochettes mixtes, jus de passion,
-    citronnelle-gingembre, café, dôme chocolat, beignets au miel) affichent <b>l'illustration vectorielle</b> prévue à cet effet :
-    rien ne casse. Dépose leurs JPG dans <code>assets/</code> sous les noms attendus, relance le build, et ils apparaissent tous seuls.
+    <b>Visuels :</b> les <b>16 photos</b> sont intégrées (logo réel inclus, agrandi à la taille de la carte signature).
+    Le repli vectorielle reste en secours : si un fichier manque ou ne charge pas, l'illustration du plat reprend la place
+    toute seule — aucune image cassée possible pendant la démo.
   </div>
 
   <h2>Script de démo (6 minutes)</h2>
