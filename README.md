@@ -49,6 +49,21 @@ ce qui garde `nyabungo2.html` léger et permet le cache à 30 jours. Donc :
 - Besoin de **tout** dans un seul fichier ? `python3 build-standalone.py` puis
   `deploy/index.html` : logo + 16 photos embarqués, 1,41 MB, aucune dépendance.
 
+## Recherche, catégories, filtres
+
+- **Barre de catégories** (`Tout / Entrées / Plats / Grillades / Boissons / Desserts`) :
+  capsule collante sous l'en-tête, **défilable horizontalement** dès qu'il y a plus de
+  catégories que de place (les boutons ne se compressent plus). Flèches `←` `→`,
+  `Début`/`Fin` au clavier ; l'onglet choisi est ramené dans la fenêtre visible.
+- **Filtres** (entonnoir à droite de la recherche) : Signature, Populaire, Végétarien,
+  Pimenté, **Petit budget** (calculé sur les prix, seuil `BUDGET_MAX`), plus
+  « Tout afficher ». Le panneau s'ouvre **dans le flux de la page**, entre la recherche
+  et la grille : pas de surcouche que les cartes pourraient recouvrir, rien à attraper
+  au pouce près du bord. Retaper sur la pastille active l'annule ; le bouton garde un
+  **point d'état** tant qu'un filtre est appliqué, même panneau refermé.
+- Recherche plein texte (nom + description) ; à 0 résultat, un état vide explicite
+  s'affiche au lieu d'une grille blanche.
+
 ## Lancer en local
 
 ```
