@@ -92,6 +92,22 @@ def main():
         else:
             print('   - aucun logo fourni : le monogramme vectoriel embarqu\u00e9 reste affich\u00e9')
 
+    # 2b. touche d'accueil iOS : en fichier unique, on embarque l'icône plutôt que
+    #     de laisser un lien qui renverrait un 404 (iOS l'ignore en data URI, sans
+    #     conséquence ; Chrome/Android, eux, la lisent).
+    link_apple = re.search(r'<link rel="apple-touch-icon"[^>]*href="assets/apple-touch-icon\.png"', s)
+    if link_apple:
+        apple_path = os.path.join(REPO, 'assets', 'apple-touch-icon.png')
+        if os.path.isfile(apple_path):
+            auri, asz = data_uri_png(apple_path)
+            s = re.sub(r'(<link rel="apple-touch-icon"[^>]*href=")assets/apple-touch-icon\.png(")',
+                       lambda m: m.group(1) + auri + m.group(2), s, count=1)
+            print(f'   + assets/apple-touch-icon.png {asz/1024:5.1f} KB \u2192 base64')
+        else:
+            m2 = re.search(r'\r?\n?<link rel="apple-touch-icon"[^>]*>', s)
+            s = s[:m2.start()] + s[m2.end():]
+            print('   - icône iOS absente : lien retiré (pas de 404 dans le fichier unique)')
+
     # 3. aucune dépendance à un dossier assets/ ne doit subsister
     resid = re.findall(r"['\"](assets/[^'\"]+)['\"]", s)
     if resid:

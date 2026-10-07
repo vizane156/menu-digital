@@ -64,6 +64,21 @@ ce qui garde `nyabungo2.html` léger et permet le cache à 30 jours. Donc :
 - Recherche plein texte (nom + description) ; à 0 résultat, un état vide explicite
   s'affiche au lieu d'une grille blanche.
 
+## Icônes et animation du logo
+
+- `assets/icon-64.png` (2,8 Ko) : **favicon**, également **embarqué en data URI** dans le
+  `<head>` → l'onglet du navigateur affiche le logo même en fichier unique.
+- `assets/icon-navbar.png` : la **marque de 26 px dans la barre haute**, elle aussi embarquée.
+- `assets/apple-touch-icon.png` : touche d'accueil iOS, **fond crème opaque** (iOS noircit
+  l'alpha d'une icône transparente).
+- Toutes trois reprennent le **monogramme haut (N + H)** : le logo complet, avec ses rubans
+  et son texte, devient illisible sous 32 px.
+- `python3 build-icons.py` les régénère et les ré-injecte (après `embed-logo.py --depuis-gif`).
+- Le logo du hero **respire lentement** : 18 s par cycle aller-retour, 4,5 px, 0,9°, plus un
+  halo ambré en fondu. L'animation porte sur l'<img>, jamais sur le conteneur (qui garde la
+  parallaxe et l'inclinaison d'orientation) ; elle se met **en pause hors écran** et se
+  **désactive complètement** si le système demande `prefers-reduced-motion`.
+
 ## Lancer en local
 
 ```
