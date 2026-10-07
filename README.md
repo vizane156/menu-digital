@@ -11,7 +11,7 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 | Ce que fait `vercel.json` | Pourquoi |
 |---|---|
 | redirige `/` → `/nyabungo2.html` | le QR code peut pointer vers l'URL racine, sans nom de fichier |
-| redirige `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` → `/` | les fichiers de travail (ancienne maquette, rapport d'analyse, build local) ne sont pas accessibles aux clients |
+| `/index.html`, `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` → `/nyabungo2.html` | les fichiers de travail (lanceur de démo, ancienne maquette, rapport d'analyse) ne tombent jamais sous les yeux d'un client ; toutes les destinations visent le menu, donc aucune chaîne ni boucle de redirection |
 | `Cache-Control: max-age=2592000` sur `/assets/*` | les 16 photos + le logo ne sont téléchargés qu'une fois par client |
 | `max-age=0, must-revalidate` sur `/*.html` | tu modifies le menu, le client voit la nouvelle version immédiatement |
 | `X-Content-Type-Options` + `Referrer-Policy` | deux réglages de base qui coûtent rien |

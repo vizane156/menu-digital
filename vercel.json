@@ -7,18 +7,23 @@
       "permanent": false
     },
     {
+      "source": "/index.html",
+      "destination": "/nyabungo2.html",
+      "permanent": false
+    },
+    {
       "source": "/nyabungo1.html",
-      "destination": "/",
+      "destination": "/nyabungo2.html",
       "permanent": false
     },
     {
       "source": "/comparatif.html",
-      "destination": "/",
+      "destination": "/nyabungo2.html",
       "permanent": false
     },
     {
       "source": "/deploy/:rest*",
-      "destination": "/",
+      "destination": "/nyabungo2.html",
       "permanent": false
     }
   ],
