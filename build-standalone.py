@@ -57,30 +57,40 @@ def main():
         print(f'   - {len(dropped)} visuel(s) non fourni(s) : référence retirée, '
               f'illustration vectorielle affichée à la place')
 
-    # 2. logo : liste de fichiers remplacée par l'URI embarquée
+    # 2. logo : il est déjà embarqué en data URI dans <img id="logoImg"> (voir
+    #    embed-logo.py). Le build ne fait donc que neutraliser la sonde externe,
+    #    pour qu'un fichier unique n'aille pas chercher un assets/ inexistant.
+    probe = re.search(r"\s*probe\.src='assets/logo\.png';", s)
+    if probe:
+        s = s[:probe.start()] + s[probe.end():]
+        print('   ~  sonde assets/logo.png retirée (logo déjà embarqué)')
     logo_uri = None
-    for name in ('logo.png', 'logo.svg', 'logo.jpg', 'logo.jpeg', 'logo.gif'):
-        p = os.path.join(REPO, 'assets', name)
-        if not os.path.isfile(p):
-            continue
-        if name.endswith('.png'):
-            logo_uri, lsize = data_uri_png(p)
-            note = f'{lsize/1024:.1f} KB'
-        else:
-            # SVG/JPG/GIF : on convertit en PNG pour garder un seul format autonome
-            im = Image.open(p).convert('RGBA')
-            buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
-            logo_uri = 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode('ascii')
-            note = f'converti en PNG, {len(buf.getvalue())/1024:.1f} KB'
-        print(f'   + assets/{name:14} {note} → base64')
-        break
-    if logo_uri:
-        lst = re.search(r"const files=\[[^\]]*\];", s)
-        if not lst:
-            print('!! liste de fichiers du logo introuvable'); sys.exit(1)
-        s = s[:lst.start()] + f"const files=['{logo_uri}'];" + s[lst.end():]
+    if re.search(r'<img id="logoImg"[^>]*src="data:image/', s):
+        print('   ~  logo d\u00e9j\u00e0 embarqu\u00e9 dans le HTML (embed-logo.py) : rien \u00e0 faire')
     else:
-        print('   - aucun logo fourni : le monogramme vectoriel embarqué reste affiché')
+        for name in ('logo.png', 'logo.svg', 'logo.jpg', 'logo.jpeg', 'logo.gif'):
+            pth = os.path.join(REPO, 'assets', name)
+            if not os.path.isfile(pth):
+                continue
+            if name.endswith('.png'):
+                logo_uri, lsize = data_uri_png(pth)
+                note = f'{lsize/1024:.1f} KB'
+            else:
+                # SVG/JPG/GIF : conversion PNG pour garder un seul format autonome
+                im = Image.open(pth).convert('RGBA')
+                buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
+                logo_uri = 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode('ascii')
+                note = f'converti en PNG, {len(buf.getvalue())/1024:.1f} KB'
+            print(f'   + assets/{name:14} {note} \u2192 base64')
+            break
+        if logo_uri:
+            lst = re.search(r"const files=\[[^\]]*\];", s)
+            if lst:
+                s = s[:lst.start()] + f"const files=['{logo_uri}'];" + s[lst.end():]
+            else:
+                print('   ~  pas de cascade \u00e0 r\u00e9\u00e9crire (src pos\u00e9 en dur dans le balisage)')
+        else:
+            print('   - aucun logo fourni : le monogramme vectoriel embarqu\u00e9 reste affich\u00e9')
 
     # 3. aucune dépendance à un dossier assets/ ne doit subsister
     resid = re.findall(r"['\"](assets/[^'\"]+)['\"]", s)

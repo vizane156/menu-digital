@@ -22,6 +22,7 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 |---|---|
 | **`nyabungo2.html`** | **Le menu** (167 Ko). C'est le fichier servi en production. |
 | **`assets/`** | 16 photographies de plats (1040×567, ~86 Ko chacune, 1,4 MB au total) + `logo.png` (700×700, 28 Ko, détouré, fond transparent). Doit être déployé **avec** le HTML. |
+| `embed-logo.py` | **Le logo, lui, est embarqué en base64 dans `nyabungo2.html`** (38 Ko) : il s'affiche même sans `assets/`, sans réseau et sans JavaScript. Ce script ré-injecte le PNG dans la page quand le logo change (`--depuis-gif` le régénère depuis `LOGO NYABUNGO.gif`). |
 | `vercel.json` | Réglages Vercel ci-dessus. |
 | `index.html` | Lanceur de démo (aperçu téléphone + consignes). Inutile en production, mais servi : reachable sur `/index.html`. |
 | `build-standalone.py` | Fabrique `deploy/index.html`, version **mono-fichier autonome** (photos et logo en base64, 1,4 MB). Repli si tu ne peux déposer qu'un seul fichier. |
@@ -34,6 +35,19 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 Chaque visuel a un **repli garanti** : photo absente, fichier qui ne charge pas (WiFi de salle saturé, upload incomplet) → l'illustration vectorielle du plat réapparaît toute seule (`error` écouté en phase de capture). Aucune image cassée n'est possible pendant le service.
 
 Le logo du hero occupe une plaque crème dégradée dès qu'une image réelle est chargée : le « H » du logo est sombre et disparaîtrait sinon sur le thème nuit. Taille ~celle d'une carte signature (132→230 px selon l'écran, 220–252 px sur desktop).
+
+## Aperçu : ce qui dépend du dossier `assets/`
+
+Le **logo** est dans le fichier : visible partout, y compris ouvert en pièce jointe ou
+dans une visionneuse de fichier.
+Les **16 photos** restent des fichiers séparés (`assets/*.jpg`), volontairement : c'est
+ce qui garde `nyabungo2.html` léger et permet le cache à 30 jours. Donc :
+
+- `http://localhost:8080/nyabungo2.html` (serveur du dépôt) → logo **et** photos ;
+- le fichier `nyabungo2.html` isolé, sans `assets/` → logo visible, plats en illustration
+  vectorielle (repli prévu, jamais d'image cassée) ;
+- Besoin de **tout** dans un seul fichier ? `python3 build-standalone.py` puis
+  `deploy/index.html` : logo + 16 photos embarqués, 1,41 MB, aucune dépendance.
 
 ## Lancer en local
 
