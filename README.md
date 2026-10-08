@@ -10,21 +10,23 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 
 | Ce que fait `vercel.json` | Pourquoi |
 |---|---|
-| redirige `/` → `/nyabungo2.html` | le QR code peut pointer vers l'URL racine, sans nom de fichier |
-| `/index.html`, `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` → `/nyabungo2.html` | les fichiers de travail (lanceur de démo, ancienne maquette, rapport d'analyse) ne tombent jamais sous les yeux d'un client ; toutes les destinations visent le menu, donc aucune chaîne ni boucle de redirection |
+| réécrit `/` en interne vers `/nyabungo2.html` | le QR code pointe vers `https://nyabungo-menu.vercel.app/?table=01` ; l'adresse visible reste `/` avec son numéro de table |
+| redirige `/nyabungo2.html`, `/index.html`, `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` vers `/` | même en ouvrant l'ancien lien du fichier, le client revient à l'URL propre ; la réécriture sert le menu sans modifier l'adresse |
 | `Cache-Control: max-age=2592000` sur `/assets/*` | les 16 photos + le logo ne sont téléchargés qu'une fois par client |
-| `max-age=0, must-revalidate` sur `/*.html` | tu modifies le menu, le client voit la nouvelle version immédiatement |
+| `max-age=0, must-revalidate` sur `/` et `/*.html` | tu modifies le menu, le client voit la nouvelle version immédiatement |
 | `X-Content-Type-Options` + `Referrer-Policy` | deux réglages de base qui coûtent rien |
 
 ## Fichiers
 
 | Fichier | Rôle |
 |---|---|
-| **`nyabungo2.html`** | **Le menu** (167 Ko). C'est le fichier servi en production. |
+| **`nyabungo2.html`** | **Le menu** (~232 Kio). C'est le fichier servi en production à l'URL `/`. |
 | **`assets/`** | 16 photographies de plats (1040×567, ~86 Ko chacune, 1,4 MB au total) + `logo.png` (700×700, 28 Ko, détouré, fond transparent). Doit être déployé **avec** le HTML. |
 | `embed-logo.py` | **Le logo, lui, est embarqué en base64 dans `nyabungo2.html`** (38 Ko) : il s'affiche même sans `assets/`, sans réseau et sans JavaScript. Ce script ré-injecte le PNG dans la page quand le logo change (`--depuis-gif` le régénère depuis `LOGO NYABUNGO.gif`). |
 | `vercel.json` | Réglages Vercel ci-dessus. |
-| `index.html` | Lanceur de démo (aperçu téléphone + consignes). Inutile en production, mais servi : reachable sur `/index.html`. |
+| **`qr-studio.html`**, `qr-studio.js` | Générateur de QR par table, accessible à `/qr-studio.html` après déploiement. |
+| `assets/qr-engine.js` | Moteur QR et ZIP embarqué localement (licences dans `assets/qr-engine.LICENSE.txt`) : aucun CDN nécessaire au générateur. |
+| `index.html` | Lanceur de démo conservé en référence ; `/index.html` redirige vers le menu en production. |
 | `build-standalone.py` | Fabrique `deploy/index.html`, version **mono-fichier autonome** (photos et logo en base64, 1,4 MB). Repli si tu ne peux déposer qu'un seul fichier. |
 | `comparatif.html` | Analyse des deux maquettes de départ. |
 | `nyabungo1.html` | Ancienne maquette, conservée en référence — **non déployée**. |
@@ -86,15 +88,22 @@ python3 serve.py 8080          # (hors dépôt) serveur sans cache : aperçu tou
 python3 -m http.server 8080    # ou le serveur standard
 ```
 
-Puis `http://localhost:8080/` — ou directement `nyabungo2.html?table=07`
-(le numéro de table vient du QR code scanné ; il s'affiche dans le hero et voyage jusqu'à la commande).
+Sur Vercel, utilise `https://nyabungo-menu.vercel.app/?table=07` : le numéro vient du QR code, s'affiche dans le hero et voyage jusqu'à la commande. `/nyabungo2.html` n'apparaît pas dans l'adresse. En local, `python3 -m http.server` ne lit pas `vercel.json` : ouvre directement `http://localhost:8080/nyabungo2.html?table=07`.
 
 ## À brancher pour la vraie production
 
 - **Endpoints API simulés** : `api.submitOrder`, `api.getOrderStatus`, `api.createPayment`, `api.getReceipt`.
-- **QR codes** : un par table, `https://<domaine>/?table=07` (le chemin `/` suffit grâce à la redirection).
+- **QR codes** : un par table, par exemple `https://nyabungo-menu.vercel.app/?table=01`, `...?table=02`, etc. La réécriture interne sert le menu sans exposer `/nyabungo2.html` ; le paramètre `table` reste visible et est inclus dans la commande simulée. Pour les serveurs, il faudra transmettre et enregistrer cette valeur côté backend lors du futur branchement.
 - **Prix** : ils vivent dans le tableau `MENU` en haut du `<script>` — une seule ligne par plat (`id`, `nom`, `prix` en FBu, `img`).
 - Photographies : les 16 sont générées. Remplace-les par les vraies photos du restaurant dès que disponibles — mêmes noms de fichiers dans `assets/`, rien d'autre à toucher.
+
+## Imprimer les QR codes des tables
+
+Après déploiement, ouvrir **`https://nyabungo-menu.vercel.app/qr-studio.html`** (outil séparé, non lié depuis le menu client). Choisir une table ou une série de 01 à 99, puis une des trois palettes contrastées. Les codes pointent vers `https://nyabungo-menu.vercel.app/?table=01`, `...?table=02`, etc. Le monogramme central, extrait du logo du restaurant (`LOGO NYABUNGO.gif` → `assets/logo.png` → `assets/apple-touch-icon.png`), est embarqué dans chaque SVG ; le QR reste autonome après téléchargement.
+
+- **SVG** individuel : qualité vectorielle pour l'imprimeur ; **PNG** individuel : 1920 × 2720 px ; **ZIP** : un SVG par table ; **Imprimer / PDF** : une carte A6 (105 × 148 mm) par page.
+- Génération locale dans le navigateur, QR statiques sans redirection tierce. Correction d'erreur **H**, zone de silence de 4 modules, logo limité au centre et modules opaques à fort contraste.
+- **Avant toute impression en série**, déployer et vérifier l'URL propre sur Vercel, puis scanner un tirage papier avec plusieurs téléphones. Le parcours de commande est encore une démonstration, pas une commande transmise aux serveurs.
 
 ## Technique
 
