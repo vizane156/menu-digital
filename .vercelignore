@@ -1,0 +1,3 @@
+# Le lanceur de demo local masquerait la reecriture / -> /nyabungo2.html.
+# Vercel sert les fichiers existants avant d'appliquer les rewrites.
+/index.html

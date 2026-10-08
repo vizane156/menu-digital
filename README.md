@@ -10,7 +10,7 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 
 | Ce que fait `vercel.json` | Pourquoi |
 |---|---|
-| réécrit `/` en interne vers `/nyabungo2.html` | le QR code pointe vers `https://nyabungo-menu.vercel.app/?table=01` ; l'adresse visible reste `/` avec son numéro de table |
+| réécrit `/` en interne vers `/nyabungo2.html` | `.vercelignore` exclut le lanceur `index.html` du déploiement, car un fichier existant prend priorité sur la réécriture ; l'adresse visible reste `/` avec son numéro de table |
 | redirige `/nyabungo2.html`, `/index.html`, `/nyabungo1.html`, `/comparatif.html`, `/deploy/*` vers `/` | même en ouvrant l'ancien lien du fichier, le client revient à l'URL propre ; la réécriture sert le menu sans modifier l'adresse |
 | `Cache-Control: max-age=2592000` sur `/assets/*` | les 16 photos + le logo ne sont téléchargés qu'une fois par client |
 | `max-age=0, must-revalidate` sur `/` et `/*.html` | tu modifies le menu, le client voit la nouvelle version immédiatement |
@@ -26,7 +26,7 @@ Le menu de **NYABUNGO Hôtel Restaurant** (Bujumbura), accès en scannant le cod
 | `vercel.json` | Réglages Vercel ci-dessus. |
 | **`qr-studio.html`**, `qr-studio.js` | Générateur de QR par table, accessible à `/qr-studio.html` après déploiement. |
 | `assets/qr-engine.js` | Moteur QR et ZIP embarqué localement (licences dans `assets/qr-engine.LICENSE.txt`) : aucun CDN nécessaire au générateur. |
-| `index.html` | Lanceur de démo conservé en référence ; `/index.html` redirige vers le menu en production. |
+| `index.html`, `.vercelignore` | Lanceur de démo conservé pour l'usage local, mais exclu du déploiement pour laisser la réécriture de `/` servir le menu ; `/index.html` redirige vers le menu en production. |
 | `build-standalone.py` | Fabrique `deploy/index.html`, version **mono-fichier autonome** (photos et logo en base64, 1,4 MB). Repli si tu ne peux déposer qu'un seul fichier. |
 | `comparatif.html` | Analyse des deux maquettes de départ. |
 | `nyabungo1.html` | Ancienne maquette, conservée en référence — **non déployée**. |
