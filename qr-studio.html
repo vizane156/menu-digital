@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe5">
-<meta name="description" content="Atelier de codes QR Nyabungo : un QR personnalisé, prêt à imprimer, pour chaque table.">
+<meta name="description" content="Codes QR avec le logo Nyabungo au centre, sans fiche ni texte autour, à télécharger en SVG ou PNG.">
 <title>Atelier QR · NYABUNGO</title>
 <link rel="icon" href="assets/icon-64.png" type="image/png">
 <style>
@@ -79,8 +79,8 @@ h1 em{font-weight:400;color:var(--clay);font-style:italic}
 .gallery.single{display:flex;justify-content:center}
 .qr-card{min-width:0;max-width:480px;width:100%}
 .gallery.single .qr-card{width:min(100%,390px)}
-.card-stage{padding:9px;border-radius:22px;background:#eee3d4;box-shadow:0 14px 32px rgba(54,33,16,.11)}
-.card-stage svg{width:100%;height:auto;display:block;border-radius:15px}
+.card-stage{background:#fff;box-shadow:0 14px 32px rgba(54,33,16,.11)}
+.card-stage svg{width:100%;height:auto;display:block}
 .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 0}
 .card-meta strong{font-size:13px}
 .card-meta span{font-size:11px;color:var(--muted)}
@@ -96,12 +96,12 @@ h1 em{font-weight:400;color:var(--clay);font-style:italic}
 @media(max-width:720px){.top{height:72px}.page{padding-bottom:48px}.hero{padding:38px 0 30px}.hero p{font-size:14px}.workspace{grid-template-columns:1fr}.controls{position:static}.preview{padding:22px 18px}.footer{flex-direction:column}.gallery.single .qr-card{width:min(100%,360px)}}
 @media(max-width:390px){.control-actions{grid-template-columns:1fr}.top-link{padding:8px 10px;font-size:11px}.brand small{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-@page{size:105mm 148mm;margin:0}
+@page{size:80mm 80mm;margin:0}
 @media print{
   body{background:#fff;margin:0}#app{display:none!important}#printArea{display:block!important}
-  .print-sheet{width:105mm;height:148mm;break-after:page;page-break-after:always;overflow:hidden}
+  .print-sheet{width:80mm;height:80mm;break-after:page;page-break-after:always;overflow:hidden}
   .print-sheet:last-child{break-after:auto;page-break-after:auto}
-  .print-sheet svg{display:block;width:105mm;height:148mm}
+  .print-sheet svg{display:block;width:80mm;height:80mm}
 }
 </style>
 </head>
@@ -112,9 +112,9 @@ h1 em{font-weight:400;color:var(--clay);font-style:italic}
     <a class="top-link" href="/">Voir le menu ↗</a>
   </header>
   <section class="hero" aria-labelledby="pageTitle">
-    <div><div class="eyebrow">L'atelier des tables</div><h1 id="pageTitle">Un scan, <em>la bonne table.</em></h1>
-      <p>Des QR codes uniques pour chaque table. L'identité Nyabungo au centre, une adresse propre et des fichiers prêts à imprimer.</p></div>
-    <div class="hero-stamp" aria-hidden="true">Créé pour<br>les tables<br>Nyabungo</div>
+    <div><div class="eyebrow">L'atelier des tables</div><h1 id="pageTitle">Un QR, <em>rien d’autre.</em></h1>
+      <p>Un code carré par table, avec le logo original du restaurant bien visible au centre, sans fiche, cadre ni texte autour. Téléchargez-le et placez-le sur votre propre visuel à imprimer.</p></div>
+    <div class="hero-stamp" aria-hidden="true">Le QR seul<br>sur votre<br>visuel</div>
   </section>
   <main class="workspace">
     <aside class="panel controls" aria-label="Configuration des codes QR">
@@ -127,33 +127,33 @@ h1 em{font-weight:400;color:var(--clay);font-style:italic}
       </div>
       <div class="field-block" id="singleFields"><label class="field-label" for="singleTable">Numéro de table</label>
         <div class="input-wrap"><input id="singleTable" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" aria-describedby="rangeHint"><span class="suffix">sur 99</span></div>
-        <p class="small-note" id="rangeHint">Exemple : 1 donnera TABLE 01.</p>
+        <p class="small-note" id="rangeHint">Le numéro est inclus dans le lien du QR, pas affiché sur l’image.</p>
       </div>
       <div class="field-block" id="batchFields" hidden><span class="field-label">Série à préparer</span>
         <div class="dual"><label for="batchStart">De la table<div class="input-wrap"><input id="batchStart" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></div></label>
           <label for="batchEnd">À la table<div class="input-wrap"><input id="batchEnd" type="number" min="1" max="99" step="1" value="12" inputmode="numeric"></div></label></div>
         <p class="small-note">Maximum 99 tables, numérotées de 01 à 99.</p>
       </div>
-      <div class="field-block"><span class="field-label">Couleur d'impression</span><div class="palette-list" role="group" aria-label="Palette du code QR">
+      <div class="field-block"><span class="field-label">Couleur du code QR</span><div class="palette-list" role="group" aria-label="Palette du code QR">
         <button type="button" class="palette" data-palette="cacao" aria-pressed="true" style="--sw-ink:#34251e;--sw-bg:#fffaf0"><span class="swatch" aria-hidden="true"><i></i><i></i><i></i></span>Cacao</button>
         <button type="button" class="palette" data-palette="terre" aria-pressed="false" style="--sw-ink:#693a28;--sw-bg:#fff8ef"><span class="swatch" aria-hidden="true"><i></i><i></i><i></i></span>Terre</button>
         <button type="button" class="palette" data-palette="foret" aria-pressed="false" style="--sw-ink:#294439;--sw-bg:#fafff6"><span class="swatch" aria-hidden="true"><i></i><i></i><i></i></span>Forêt</button>
       </div></div>
       <div class="field-block"><span class="field-label">Adresse inscrite dans le QR</span><div class="address"><small>Lien direct, sans service de redirection</small><code id="currentUrl">https://nyabungo-menu.vercel.app/?table=01</code></div></div>
-      <div class="quality"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Correction d'erreur haute, marge blanche préservée et logo centré sans masquer les repères de lecture.</span></div>
+      <div class="quality"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Logo du restaurant centré, couleurs contrastées, correction d’erreur haute et marge claire de lecture. Gardez cette marge quand vous intégrez le QR sur votre image.</span></div>
       <button type="button" class="btn btn-primary" id="generateBtn"><span>Actualiser l'aperçu</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
       <div class="control-actions"><button type="button" class="btn" id="printBtn">Imprimer / PDF</button><button type="button" class="btn" id="zipBtn" hidden>Tout en ZIP · SVG</button></div>
       <p class="status" id="status" role="status" aria-live="polite"></p>
     </aside>
     <section class="panel preview" aria-labelledby="previewTitle">
-      <div class="preview-header"><div><h2 id="previewTitle">Prêt pour la table</h2><p>Carte au format A6 · 105 × 148 mm · QR vectoriel net à l'impression</p></div><span class="count" id="count">01 carte</span></div>
+      <div class="preview-header"><div><h2 id="previewTitle">Codes QR seuls</h2><p>QR avec logo central, sans fiche ni texte ajouté · SVG ou PNG 1600 × 1600 px</p></div><span class="count" id="count">01 QR</span></div>
       <div id="gallery" class="gallery single"></div>
-      <p class="notice">Avant d'imprimer toute une série, scannez un exemplaire sur papier avec au moins deux téléphones. Le service de commande reste une démonstration tant que le backend n'est pas connecté.</p>
+      <p class="notice">Avant d’imprimer toute une série, placez le QR sur un fond clair sans rogner sa marge blanche, puis scannez un exemplaire avec deux téléphones. Le service de commande reste une démonstration tant que le backend n'est pas connecté.</p>
     </section>
   </main>
   <footer class="footer"><span>NYABUNGO · Un lien distinct pour chaque table.</span><span>QR statiques générés dans votre navigateur — aucune donnée envoyée à un service tiers.</span></footer>
 </div>
 <div id="printArea" aria-hidden="true"></div>
-<script type="module" src="qr-studio.js"></script>
+<script type="module" src="qr-studio.js?v=3"></script>
 </body>
 </html>
