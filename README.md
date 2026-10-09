@@ -99,10 +99,10 @@ Sur Vercel, utilise `https://nyabungo-menu.vercel.app/?table=07` : le numéro vi
 
 ## Imprimer les QR codes des tables
 
-Après déploiement, ouvrir **`https://nyabungo-menu.vercel.app/qr-studio.html`** (outil séparé, non lié depuis le menu client). Choisir une table ou une série de 01 à 99, puis une des trois palettes contrastées. Les codes pointent vers `https://nyabungo-menu.vercel.app/?table=01`, `...?table=02`, etc. Le monogramme central, extrait du logo du restaurant (`LOGO NYABUNGO.gif` → `assets/logo.png` → `assets/apple-touch-icon.png`), est embarqué dans chaque SVG ; le QR reste autonome après téléchargement.
+Après déploiement, ouvrir **`https://nyabungo-menu.vercel.app/qr-studio.html`** (outil séparé, non lié depuis le menu client). Choisir une table ou une série de 01 à 99, puis une couleur (Cacao, Terre ou Forêt). Chaque fichier contient **un QR carré contrasté avec le logo original du restaurant au centre**, sans fiche ni texte ajouté autour ; le numéro de table reste encodé dans le lien (`https://nyabungo-menu.vercel.app/?table=01`, `...?table=02`, etc.) et figure dans le nom du fichier pour identifier les QR lors de la composition d'un visuel.
 
-- **SVG** individuel : qualité vectorielle pour l'imprimeur ; **PNG** individuel : 1920 × 2720 px ; **ZIP** : un SVG par table ; **Imprimer / PDF** : une carte A6 (105 × 148 mm) par page.
-- Génération locale dans le navigateur, QR statiques sans redirection tierce. Correction d'erreur **H**, zone de silence de 4 modules, logo limité au centre et modules opaques à fort contraste.
+- **SVG** individuel : vectoriel pour l'imprimeur ; **PNG** individuel : 1600 × 1600 px ; **ZIP** : un SVG par table ; **Imprimer / PDF** : un QR carré de 80 × 80 mm par page, sans fiche.
+- Génération locale dans le navigateur, QR statiques sans redirection tierce. Le logo central (`assets/logo.png`) est intégré aux SVG pour qu'ils restent autonomes. Correction d'erreur **H**, zone blanche de 4 modules intégrée au fichier : ne pas la rogner lors de la mise en page sur une autre image.
 - **Avant toute impression en série**, déployer et vérifier l'URL propre sur Vercel, puis scanner un tirage papier avec plusieurs téléphones. Le parcours de commande est encore une démonstration, pas une commande transmise aux serveurs.
 
 ## Technique
